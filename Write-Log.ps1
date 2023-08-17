@@ -51,25 +51,25 @@ Function Write-Log {
         [int16]$Severity = 1,
         [Parameter(Mandatory = $false, Position = 2)]
         [ValidateNotNull()]
-        [string]$Source = $([string]$parentFunctionName = [IO.Path]::GetFileNameWithoutExtension((Get-Variable -Name MyInvocation -Scope 1 -ErrorAction SilentlyContinue).Value.MyCommand.Name); If ($parentFunctionName) { $parentFunctionName } Else { 'Unknown' }),
+        [string]$Source = '',
         [Parameter(Mandatory = $false, Position = 3)]
         [ValidateNotNullorEmpty()]
-        [string]$ScriptSection = $script:installPhase,
+        [string]$ScriptSection = '',
         [Parameter(Mandatory = $false, Position = 4)]
         [ValidateSet('CMTrace', 'Legacy')]
-        [string]$LogType = $configToolkitLogStyle,
+        [string]$LogType = 'CMTrace',
         [Parameter(Mandatory = $false, Position = 5)]
         [ValidateNotNullorEmpty()]
-        [string]$LogFileDirectory = $(If ($configToolkitCompressLogs) { $logTempFolder } Else { $configToolkitLogDir }),
+        [string]$LogFileDirectory = '',
         [Parameter(Mandatory = $false, Position = 6)]
         [ValidateNotNullorEmpty()]
-        [string]$LogFileName = $logName,
+        [string]$LogFileName = '',
         [Parameter(Mandatory = $false, Position = 7)]
         [ValidateNotNullorEmpty()]
-        [decimal]$MaxLogFileSizeMB = $configToolkitLogMaxSize,
+        [decimal]$MaxLogFileSizeMB = 10,
         [Parameter(Mandatory = $false, Position = 8)]
         [ValidateNotNullorEmpty()]
-        [boolean]$WriteHost = $configToolkitLogWriteToHost,
+        [boolean]$WriteHost = $false,
         [Parameter(Mandatory = $false, Position = 9)]
         [ValidateNotNullorEmpty()]
         [boolean]$ContinueOnError = $true,
@@ -78,7 +78,7 @@ Function Write-Log {
         [Parameter(Mandatory = $false, Position = 11)]
         [switch]$DebugMessage = $false,
         [Parameter(Mandatory = $false, Position = 12)]
-        [boolean]$LogDebugMessage = $configToolkitLogDebugMessage
+        [boolean]$LogDebugMessage = $false
     )
 
     Begin {
