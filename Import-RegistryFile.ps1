@@ -20,7 +20,7 @@ function Import-RegistryFile {
     Version: 1.0
 
     .LINK
-    
+    https://github.com/reave/useful-tools/blob/main/Import-RegistryFile.ps1
 
     #>
     param (
