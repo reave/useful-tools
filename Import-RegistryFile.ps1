@@ -53,11 +53,11 @@ function Import-RegistryFile {
 
             if ($value -match '^"(.*)"$') {
                 $type = 'String'
-                $value = $value.Trim('"')
+                $value = [string]$value.Trim('"')
             }
             elseif ($value -match '^dword:(.*)$') {
                 $type = 'DWORD'
-                $value = $value.Substring(6)
+                $value = [int]$value.Substring(6)
             }
             elseif ($value -match '^hex:(.*)$') {
                 $type = 'Binary'
@@ -68,10 +68,10 @@ function Import-RegistryFile {
             }
 
             $regEntries += [PSCustomObject]@{
-                Key   = $currentKey
-                Name  = $name.Trim('"')
+                Key   = [string]$currentKey
+                Name  = [string]$name.Trim('"')
                 Value = $value
-                Type  = $type
+                Type  = [string]$type
             }
         }
     }
