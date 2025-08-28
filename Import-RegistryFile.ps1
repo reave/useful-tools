@@ -32,7 +32,9 @@ function Import-RegistryFile {
         throw "The file '$FilePath' does not exist."
     }
 
-    $regContent = Get-Content -Path $FilePath -Raw
+    $regContent = Get-Content -Path $FilePath -Encoding Unicode |
+    Where-Object { $_ -and ($_ -notmatch '^\s*[;]') }  # skip comments
+
 
     if (-Not ($regContent -match '^\s*Windows Registry Editor Version')) {
         throw "The file '$FilePath' is not a valid .reg file."
@@ -60,8 +62,26 @@ function Import-RegistryFile {
                 $value = [int]$value.Substring(6)
             }
             elseif ($value -match '^hex:(.*)$') {
+                # hex:<bytes> form
                 $type = 'Binary'
-                $value = $value.Substring(4)
+                # capture the bytes portion from the regex
+                $hexString = $Matches[1]
+                # remove line-continuation backslashes and any whitespace, then trim trailing commas
+                $hexString = ($hexString -replace '\\\s*', '') -replace '\s', ''
+                $hexString = $hexString.TrimEnd(',')
+                $bytes = $hexString -split ','
+                $value = [byte[]]($bytes | Where-Object { $_ -ne '' } | ForEach-Object { [Convert]::ToByte($_, 16) })
+            }
+            elseif ($value -match '^hex\(([^)]+)\):(.+)$') {
+                # hex(<type>):<bytes> form — capture type and bytes
+                $type = 'Binary'
+                # capture the bytes portion from the regex
+                $hexString = $Matches[2]
+                # remove line-continuation backslashes and any whitespace, then trim trailing commas
+                $hexString = ($hexString -replace '\\\s*', '') -replace '\s', ''
+                $hexString = $hexString.TrimEnd(',')
+                $bytes = $hexString -split ','
+                $value = [byte[]]($bytes | Where-Object { $_ -ne '' } | ForEach-Object { [Convert]::ToByte($_, 16) })
             }
             else {
                 $type = 'Unknown'
