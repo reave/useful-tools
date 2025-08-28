@@ -78,7 +78,3 @@ function Import-RegistryFile {
 
     return $regEntries
 }
-
-# Example usage:
-# $registryObject = Import-RegistryFile -FilePath "C:\Path\To\File.reg"
-# $registryObject | Format-Table -AutoSize
